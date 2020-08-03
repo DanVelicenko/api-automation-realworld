@@ -15,9 +15,10 @@ import static net.serenitybdd.core.Serenity.setSessionVariable;
 
 public class RealworldSteps extends BaseSteps {
   private final static String _API_USERS_ = "/api/users/";
+  private final static String _API_USER_ = "/api/user/";
   private final static String _API_ARTICLES_ = "/api/articles/";
   // Find endpoint for API login
-  private final static String _API_USERS_LOGIN_ = null;
+  private final static String _API_USERS_LOGIN_ = "/api/users/login/";
 
   @Steps
   RealworldSteps realworldSteps;
@@ -49,7 +50,7 @@ public class RealworldSteps extends BaseSteps {
     Map<String, Object> map = new HashMap<>(dataTable.asMap(String.class, String.class));
     setSessionVariable("token").to(null);
 
-    if(map.get("user --> email").toString().equals(RANDOM_EMAIL)){
+    if (map.get("user --> email").toString().equals(RANDOM_EMAIL)) {
       map.replace("user --> email", sessionVariableCalled(RANDOM_EMAIL));
     }
 
@@ -58,11 +59,34 @@ public class RealworldSteps extends BaseSteps {
       saveValueInPathToSessionVariable("user --> token", "token");
     }
   }
-
-
-  // Private
-
-  private static String addCommentEndpoint(String slug){
-    return _API_ARTICLES_ + slug + "/comments";
+  @Step
+  public static void updateSettings(DataTable dataTable) throws IOException{
+    sendRequestWithBodyJson(PUT, _API_USER_, createBody(dataTable));
   }
+
+  @Step
+  public static void createPost(DataTable dataTable) throws IOException{
+    sendRequestWithBodyJson(POST, _API_ARTICLES_, createBody(dataTable));
+  }
+
+  @Step
+  public static void modifyPost(DataTable dataTable) throws IOException{
+    sendRequestWithBodyJson(POST, _API_ARTICLES_, createBody(dataTable));
+  }
+
+  @Step
+  public static void postComment(DataTable dataTable) throws IOException{
+    sendRequestWithBodyJson(POST, addCommentEndpoint("slug"), createBody(dataTable));
+  }
+
+  @Step
+  public static void deleteComment() throws IOException {
+    System.out.println("---------");
+    sendRequestWithBodyJson(DELETE, _API_ARTICLES_ + sessionVariableCalled("comment_id"), "{}");
+  }
+    // Private
+
+    private static String addCommentEndpoint(String slug) {
+      return _API_ARTICLES_ + slug + "/comments";
+    }
 }
