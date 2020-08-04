@@ -6,7 +6,7 @@ Feature: Realworld-example Feature
       | user --> password | totalyAwsomeAndUniquePass |
     Then  user gets status code "200"
 
-
+  @runx
   Scenario: Validate the account
     Then the path "user" contains the following values:
       | username | RANDOM_USERNAME |
@@ -129,7 +129,7 @@ Feature: Realworld-example Feature
     # Find the missing XXX & YYY JSON keys
     And  the value of path "comment --> body" is "This is my comment"
 
-  @run
+  @runx
   Scenario: Delete comment from post
     # Find the missing XXX & YYY JSON keys
     When the user creates a post using the following data:
